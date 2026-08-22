@@ -46,8 +46,20 @@
     <section class="panel">
       <h2>Your income</h2>
       <div class="fields">
-        <label>Expected GROSS receipts per year (₱)
+        <label>I earn as:
+          <select id="mixMode">
+            <option value="pure">Self-employed / freelancer only</option>
+            <option value="mixed">Employed + freelance (mixed income)</option>
+          </select>
+        </label>
+        <label>Expected GROSS receipts per year (₱) — freelance/business
           <input id="gross" type="number" min="0" step="any" value="600000">
+        </label>
+        <label id="compWrap" class="hidden">Annual compensation income (₱) — employed
+          <input id="comp" type="number" min="0" step="any" value="420000">
+        </label>
+        <label id="contribWrap" class="hidden">Employee SSS/PhilHealth/Pag-IBIG paid (₱/yr)
+          <input id="contribs" type="number" min="0" step="any" value="0">
         </label>
         <label>Income pattern (for quarterly view)
           <select id="season">
@@ -102,6 +114,10 @@
             <tr><td>Less: 40% OSD</td><td class="r">n/a</td><td class="r" id="d_osd">—</td></tr>
             <tr><td><strong>Taxable income</strong></td><td class="r" id="d_taxableA">—</td><td class="r" id="d_taxableB">—</td></tr>
             <tr class="totrow"><td><strong>Annual income tax</strong></td><td class="r" id="d_taxA">—</td><td class="r" id="d_taxB">—</td></tr>
+            <tr class="comp-rows hidden"><td>Compensation income (salary)</td><td class="r" id="d_comp">—</td><td class="r" id="d_comp2">—</td></tr>
+            <tr class="comp-rows hidden"><td>Less: ₱90k exemption + contributions</td><td class="r" id="d_compded">—</td><td class="r" id="d_compded2">—</td></tr>
+            <tr class="comp-rows hidden"><td>Compensation income tax</td><td class="r" id="d_compTax">—</td><td class="r" id="d_compTax2">—</td></tr>
+            <tr class="comp-rows hidden totrow"><td><strong>GRAND TOTAL (freelance + salary)</strong></td><td class="r" id="d_grandA">—</td><td class="r" id="d_grandB">—</td></tr>
             <tr><td>Effective rate on gross</td><td class="r" id="d_erA">—</td><td class="r" id="d_erB">—</td></tr>
           </tbody>
         </table>
@@ -116,7 +132,7 @@
     <div class="modal-card wide">
       <button class="modal-x" id="qClose">✕</button>
       <h2>📅 Quarterly 1701Q — <span id="qBest"></span></h2>
-      <p class="hint">Cumulative method (how BIR Form 1701Q actually computes): tax due grows with cumulative income; each quarter pays the increment.</p>
+      <p class="hint" id="qHint">Cumulative method (how BIR Form 1701Q actually computes): tax due grows with cumulative income; each quarter pays the increment.</p>
       <table class="book-table">
         <thead><tr><th>Quarter</th><th class="r">Cum. income</th><th class="r">Cum. tax due</th><th class="r">Pay this quarter</th></tr></thead>
         <tbody id="qBody"></tbody>

@@ -44,6 +44,7 @@ function bracketOf(taxable) {
 
 function calc() {
   const gross = Number($('gross').value) || 0;
+  const mixed = $('mixMode').value === 'mixed';
   // Option A: 8% on gross over 250k
   const aBase = Math.max(0, gross - EXEMPT);
   const aTax = aBase * 0.08;
@@ -51,7 +52,17 @@ function calc() {
   const osdAmt = gross * OSD;
   const bTaxable = Math.max(0, gross - osdAmt);
   const bTax = gradTax(bTaxable);
-  return { gross, aBase, aTax, osdAmt, bTaxable, bTax };
+  // Mixed: compensation taxed graduated after ₱90k 13th-month/benefits cap + mandatory contributions
+  const comp = mixed ? (Number($('comp').value) || 0) : 0;
+  const contribs = mixed ? (Number($('contribs').value) || 0) : 0;
+  const compExempt = Math.min(90000, Math.max(0, comp));
+  const compTaxable = Math.max(0, comp - compExempt - contribs);
+  const compTax = gradTax(compTaxable);
+  return {
+    gross, mixed, aBase, aTax, osdAmt, bTaxable, bTax,
+    comp, contribs, compExempt, compTaxable, compTax,
+    aTotal: aTax + compTax, bTotal: bTax + compTax
+  };
 }
 
 function quarterly(c, method) {
@@ -83,17 +94,24 @@ function exportCsv(qrows, method, c) {
 function render() {
   const c = calc();
   $('monthlyEcho').textContent = peso(c.gross / 12);
+  $('compWrap').classList.toggle('hidden', !c.mixed);
+  $('contribWrap').classList.toggle('hidden', !c.mixed);
 
-  // option cards
-  $('aTax').textContent = peso(c.aTax);
-  $('aEr').textContent = 'effective ' + pct(c.gross > 0 ? c.aTax / c.gross : 0) + ' of gross';
-  $('bTax').textContent = peso(c.bTax);
-  $('bEr').textContent = 'effective ' + pct(c.gross > 0 ? c.bTax / c.gross : 0) + ' of gross';
+  // option cards (mixed → totals incl. compensation tax)
+  const aShown = c.mixed ? c.aTotal : c.aTax;
+  const bShown = c.mixed ? c.bTotal : c.bTax;
+  const baseInc = c.mixed ? c.gross + c.comp : c.gross;
+  $('aTax').textContent = peso(aShown);
+  $('aEr').textContent = (c.mixed ? 'incl. salary tax ' + peso(c.compTax) + ' · ' : '') +
+    'effective ' + pct(baseInc > 0 ? aShown / baseInc : 0) + ' of income';
+  $('bTax').textContent = peso(bShown);
+  $('bEr').textContent = (c.mixed ? 'incl. salary tax ' + peso(c.compTax) + ' · ' : '') +
+    'effective ' + pct(baseInc > 0 ? bShown / baseInc : 0) + ' of income';
 
   // winner
-  const aWins = c.aTax < c.bTax, tie = c.aTax === c.bTax;
+  const aWins = aShown < bShown, tie = aShown === bShown;
   document.querySelectorAll('.opt-card').forEach((el, i) => el.classList.toggle('win', tie ? false : (i === 0 ? aWins : !aWins)));
-  const diff = Math.abs(c.aTax - c.bTax);
+  const diff = Math.abs(aShown - bShown);
   $('verdict').textContent = c.gross <= 0 ? 'Enter your gross receipts to compare.'
     : tie ? 'Both options compute the same tax at this income level.'
     : (aWins ? `✓ Choose 8% — saves ${peso(diff)} vs graduated+OSD.`
@@ -101,23 +119,32 @@ function render() {
 
   // warnings
   const warns = [];
-  if (c.gross > EIGHT_PCT_CAP) warns.push('Gross exceeds ₱3M — you are NOT eligible for the 8% option; graduated applies.');
+  if (c.mixed) warns.push('Mixed income: your employer withholds the salary part monthly (substituted filing for compensation). The 8%-vs-graduated choice applies to your freelance income — you still file 1701/1701Q for it.');
+  if (c.gross > EIGHT_PCT_CAP) warns.push('Freelance gross exceeds ₱3M — you are NOT eligible for the 8% option; graduated applies.');
   if (c.gross > VAT_THRESHOLD) warns.push('Above ₱3M you are generally required to register for VAT (12%) — separate from income tax.');
-  if (c.gross > 0 && c.gross < 250000) warns.push('Below ₱250k gross you owe ₱0 income tax under both options.');
+  if (c.gross > 0 && c.gross < 250000) warns.push('Below ₱250k freelance gross you owe ₱0 on the freelance side under both options.');
   $('warn').innerHTML = warns.map(w => `<div>${w}</div>`).join('');
 
   // comparison doc
   const p = (id, v) => $(id).textContent = v;
-  p('cd_gross', `Gross receipts: ${peso(c.gross)} · prepared ${new Date().toISOString().slice(0, 10)}`);
+  p('cd_gross', `Gross receipts: ${peso(c.gross)}` + (c.mixed ? ` · compensation: ${peso(c.comp)}` : '') + ` · prepared ${new Date().toISOString().slice(0, 10)}`);
   p('d_grossA', peso(c.gross)); p('d_grossB', peso(c.gross));
   p('d_250A', '−' + peso(Math.min(EXEMPT, c.gross)));
   p('d_osd', '−' + peso(c.osdAmt));
   p('d_taxableA', peso(c.aBase)); p('d_taxableB', peso(c.bTaxable));
   p('d_taxA', peso(c.aTax)); p('d_taxB', peso(c.bTax));
   p('d_erA', pct(c.gross > 0 ? c.aTax / c.gross : 0)); p('d_erB', pct(c.gross > 0 ? c.bTax / c.gross : 0));
+  document.querySelectorAll('.comp-rows').forEach(el => el.classList.toggle('hidden', !c.mixed));
+  if (c.mixed) {
+    p('d_comp', peso(c.comp)); p('d_comp2', peso(c.comp));
+    const ded = '−' + peso(c.compExempt + c.contribs);
+    p('d_compded', ded); p('d_compded2', ded);
+    p('d_compTax', peso(c.compTax)); p('d_compTax2', peso(c.compTax));
+    p('d_grandA', peso(c.aTotal)); p('d_grandB', peso(c.bTotal));
+  }
   $('cd_verdict').textContent = c.gross <= 0 ? '' :
     tie ? 'Either option — identical tax.'
-    : (aWins ? `8% saves ${peso(diff)} per year at this income.` : `Graduated + OSD saves ${peso(diff)} per year at this income.`);
+    : (aWins ? `8% saves ${peso(diff)} per year on your freelance tax.` : `Graduated + OSD saves ${peso(diff)} per year on your freelance tax.`);
 
   // bracket table with active row
   const tb = $('bracketTable').querySelector('tbody');
@@ -134,7 +161,12 @@ function render() {
 }
 
 function saveDraft() {
-  try { localStorage.setItem(LS.draft, JSON.stringify({ gross: $('gross').value, season: $('season').value })); } catch (e) {}
+  try {
+    localStorage.setItem(LS.draft, JSON.stringify({
+      gross: $('gross').value, season: $('season').value,
+      mixMode: $('mixMode').value, comp: $('comp').value, contribs: $('contribs').value
+    }));
+  } catch (e) {}
 }
 function loadDraft() {
   try {
@@ -142,6 +174,9 @@ function loadDraft() {
     if (!d) return;
     $('gross').value = d.gross ?? 600000;
     $('season').value = d.season ?? 'even';
+    $('mixMode').value = d.mixMode ?? 'pure';
+    $('comp').value = d.comp ?? 420000;
+    $('contribs').value = d.contribs ?? 0;
   } catch (e) {}
 }
 
@@ -154,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDraft();
   applyPro();
 
-  ['gross', 'season'].forEach(id => $(id).addEventListener('input', render));
+  ['gross', 'season', 'mixMode', 'comp', 'contribs'].forEach(id => $(id).addEventListener('input', render));
   $('printBtn').addEventListener('click', () => window.print());
 
   const openPay = () => { $('payModal').classList.remove('hidden'); $('codeMsg').textContent = ''; };
@@ -182,6 +217,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const rows = quarterly(c, c.aTax <= c.bTax ? 'A' : 'B');
     lastQ = { rows, method, c };
     $('qBest').textContent = method;
+    $('qHint').textContent = c.mixed
+      ? 'Freelance side only (your employer handles salary withholding). Cumulative method: each quarter pays the increment of cumulative tax due.'
+      : 'Cumulative method (how BIR Form 1701Q actually computes): tax due grows with cumulative income; each quarter pays the increment.';
     $('qBody').innerHTML = rows.map(r =>
       `<tr><td>Q${r.q}</td><td class="r">${peso(r.cumGross)}</td><td class="r">${peso(r.cumTax)}</td><td class="r"><strong>${peso(r.pay)}</strong></td></tr>`).join('');
     $('qModal').classList.remove('hidden');

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8% vs Graduated Tax Calculator Philippines 2026 — TaxCalcPH</title>
+<meta name="description" content="Should you pick 8% or graduated tax? Free calculator for Philippine freelancers & self-employed. Compares 8% flat vs graduated (with 40% OSD), quarterly 1701Q amounts, printable computation. TRAIN/R.A. 10963 tables.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%237c3aed'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3E8%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"Is 8% or graduated tax better for freelancers in the Philippines?","acceptedAnswer":{"@type":"Answer","text":"It depends on income and deductions. 8% is flat on gross receipts over ₱250,000. Graduated lets you deduct 40% (OSD) or actual expenses first, so at many income levels graduated computes less tax. Run both in the calculator — the crossover typically lands near ₱700k–₱1M of gross receipts."}},
+    {"@type":"Question","name":"How is the 8% tax computed?","acceptedAnswer":{"@type":"Answer","text":"Tax = 8% × (gross sales/receipts − ₱250,000). The first ₱250,000 is exempt. Available to self-employed individuals with gross receipts ≤ ₱3M who elect 8%."}},
+    {"@type":"Question","name":"What is the 40% OSD deduction?","acceptedAnswer":{"@type":"Answer","text":"Optional Standard Deduction: self-employed individuals and professionals may deduct 40% of gross sales/receipts instead of itemizing actual expenses, then pay graduated rates on the remaining 60%."}}
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">Tax<span>Calc</span>PH</div>
+  <nav>
+    <span id="proBadge" class="badge hidden">PRO</span>
+    <a href="#faq">FAQ</a>
+    <button id="proBtn" class="btn-link">Get PRO — ₱99</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>8% or Graduated Tax? Know in 30 seconds.</h1>
+    <p class="sub">The decision calculator for Philippine freelancers &amp; self-employed. Compares <strong>8% flat</strong> vs <strong>graduated rates + 40% OSD</strong> under your actual income — and shows your quarterly <strong>1701Q</strong> numbers. No signup. Nothing leaves your browser.</p>
+    <div class="hero-chips">
+      <span>✓ TRAIN / R.A. 10963 tables</span>
+      <span>✓ 40% OSD included</span>
+      <span>✓ Quarterly 1701Q (PRO)</span>
+      <span>✓ Printable computation</span>
+    </div>
+  </section>
+
+  <div class="app-grid">
+    <section class="panel">
+      <h2>Your income</h2>
+      <div class="fields">
+        <label>Expected GROSS receipts per year (₱)
+          <input id="gross" type="number" min="0" step="any" value="600000">
+        </label>
+        <label>Income pattern (for quarterly view)
+          <select id="season">
+            <option value="even">Even across 4 quarters (25% each)</option>
+            <option value="back">Back-loaded (10% / 20% / 30% / 40%)</option>
+            <option value="front">Front-loaded (40% / 30% / 20% / 10%)</option>
+          </select>
+        </label>
+      </div>
+      <p class="hint">Quick check vs your monthly average: <strong id="monthlyEcho">—</strong>/mo</p>
+
+      <h2>Compared options</h2>
+      <div class="opt-cards">
+        <div class="opt-card">
+          <h3>Option A — 8% flat</h3>
+          <p class="opt-desc">8% on gross over ₱250k. No deductions, no books-of-accounts-level paperwork, simpler. Requires gross ≤ ₱3M.</p>
+          <div class="opt-tax" id="aTax">—</div>
+          <div class="opt-er" id="aEr"></div>
+        </div>
+        <div class="opt-card">
+          <h3>Option B — Graduated + OSD</h3>
+          <p class="opt-desc">Deduct 40% of gross, pay graduated rates (0–35%) on the rest. Usually wins below ~₱1M gross; requires books.</p>
+          <div class="opt-tax" id="bTax">—</div>
+          <div class="opt-er" id="bEr"></div>
+        </div>
+      </div>
+      <div class="verdict" id="verdict"></div>
+      <div class="warn" id="warn"></div>
+
+      <div class="actions">
+        <button id="printBtn" class="btn primary">🖨️ Print computation</button>
+        <button id="quarterBtn" class="btn hidden">📅 Quarterly 1701Q (PRO)</button>
+      </div>
+
+      <h2 style="margin-top:1.6rem">Bracket detail (Option B)</h2>
+      <table class="bracket-table" id="bracketTable">
+        <thead><tr><th>Taxable income</th><th class="r">Rate</th><th class="r">Tax on this income</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2 class="preview-title">How the two options compare</h2>
+      <div id="doc" class="comp-doc">
+        <div class="cd-head">TAX OPTION COMPARISON — SELF-EMPLOYED / PROFESSIONAL</div>
+        <div class="cd-sub" id="cd_gross">Gross receipts: —</div>
+        <table class="cd-table">
+          <thead><tr><th></th><th class="r">A: 8% flat</th><th class="r">B: Graduated + OSD</th></tr></thead>
+          <tbody>
+            <tr><td>Gross receipts</td><td class="r" id="d_grossA">—</td><td class="r" id="d_grossB">—</td></tr>
+            <tr><td>Less: ₱250k exemption</td><td class="r" id="d_250A">—</td><td class="r">—</td></tr>
+            <tr><td>Less: 40% OSD</td><td class="r">n/a</td><td class="r" id="d_osd">—</td></tr>
+            <tr><td><strong>Taxable income</strong></td><td class="r" id="d_taxableA">—</td><td class="r" id="d_taxableB">—</td></tr>
+            <tr class="totrow"><td><strong>Annual income tax</strong></td><td class="r" id="d_taxA">—</td><td class="r" id="d_taxB">—</td></tr>
+            <tr><td>Effective rate on gross</td><td class="r" id="d_erA">—</td><td class="r" id="d_erB">—</td></tr>
+          </tbody>
+        </table>
+        <div class="cd-verdict" id="cd_verdict"></div>
+        <div class="cd-foot">Computed per R.A. 10963 (TRAIN) individual rate tables. Verify with your accountant / RDO before filing.</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- QUARTER MODAL (PRO) -->
+  <div id="qModal" class="modal hidden">
+    <div class="modal-card wide">
+      <button class="modal-x" id="qClose">✕</button>
+      <h2>📅 Quarterly 1701Q — <span id="qBest"></span></h2>
+      <p class="hint">Cumulative method (how BIR Form 1701Q actually computes): tax due grows with cumulative income; each quarter pays the increment.</p>
+      <table class="book-table">
+        <thead><tr><th>Quarter</th><th class="r">Cum. income</th><th class="r">Cum. tax due</th><th class="r">Pay this quarter</th></tr></thead>
+        <tbody id="qBody"></tbody>
+      </table>
+      <div class="actions"><button id="qExport" class="btn primary">⬇️ Export CSV</button></div>
+    </div>
+  </div>
+
+  <section class="marketing">
+    <h2>Why it matters</h2>
+    <div class="cards">
+      <div class="card"><h3>🧮 Real math, not vibes</h3><p>Both options computed side-by-side with the actual TRAIN brackets, ₱250k exemption and 40% OSD — the exact comparison your accountant does, in 30 seconds.</p></div>
+      <div class="card"><h3>📅 Quarterly-ready</h3><p>PRO converts the winner into per-quarter 1701Q payments (cumulative method), so April 15 / Aug 15 / Nov 15 / Jan 15 stops being a scramble.</p></div>
+      <div class="card"><h3>🇵🇭 Made for PH freelancers</h3><p>Pairs with <a href="https://makavelimachiavelli.github.io/invoiceph/">InvoicePH</a> — compliant invoices + a sales book feed straight into this computation.</p></div>
+    </div>
+
+    <h2 id="faq">FAQ</h2>
+    <div class="faq-item"><h3>Where's the crossover between 8% and graduated?</h3><p>With OSD it's roughly ₱700k–₱1M gross, moving with your actual mix. Below it, graduated+OSD usually computes less; above it, 8%'s flat 8% usually wins. Run your number — that's what this page is for.</p></div>
+    <div class="faq-item"><h3>Does 8% have the ₱250k exemption too?</h3><p>Yes — 8% applies to gross receipts <em>in excess of</em> ₱250,000.</p></div>
+    <div class="faq-item"><h3>What about VAT?</h3><p>Separate decision: gross receipts above ₱3M generally require VAT registration (12%) regardless of income-tax option. This tool shows a warning when you cross ₱3M.</p></div>
+    <div class="faq-item"><h3>Is this official BIR software?</h3><p>No — it's an independent calculator using the published R.A. 10963 rate tables. Always verify your final filing with your accountant or RDO.</p></div>
+
+    <div class="cta-box">
+      <h2>TaxCalcPH PRO — ₱99 one-time</h2>
+      <ul>
+        <li>📅 <strong>Quarterly 1701Q schedule</strong> — per-quarter income patterns (even / back-loaded / front-loaded), cumulative tax + payable per quarter</li>
+        <li>🖨️ <strong>Printable computation sheet</strong> — show your accountant exactly what you computed</li>
+        <li>⬇️ <strong>CSV export</strong> — drop the numbers into your records</li>
+      </ul>
+      <p class="once">One-time ₱99 via GCash. Cheaper than one wrong quarter.</p>
+      <button id="proBtn2" class="btn primary big">Unlock PRO — ₱99</button>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>TaxCalcPH — independent 8% vs graduated calculator for Philippine freelancers (TRAIN / R.A. 10963). Not affiliated with the BIR; verify filings with your RDO/accountant.</p>
+</footer>
+
+<!-- PAY MODAL -->
+<div id="payModal" class="modal hidden">
+  <div class="modal-card">
+    <button class="modal-x" id="payClose">✕</button>
+    <h2>Unlock TaxCalcPH PRO</h2>
+    <p class="price">₱99 <span>one-time · lifetime · no subscription</span></p>
+    <div class="qr-box">
+      <img src="assets/gcash-qr.svg" alt="GCash QR (replace with merchant QR)" width="180" height="180">
+      <ol class="pay-steps">
+        <li>Scan the GCash QR and send <strong>₱99</strong>.</li>
+        <li>Enter the unlock code sent to you below.</li>
+      </ol>
+    </div>
+    <div class="code-row">
+      <input id="codeInput" placeholder="Enter unlock code">
+      <button id="codeBtn" class="btn primary">Unlock</button>
+    </div>
+    <p class="code-msg" id="codeMsg"></p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

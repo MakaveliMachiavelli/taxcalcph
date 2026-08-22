@@ -112,3 +112,7 @@ input:focus,select:focus{outline:2px solid #ddd3ff;border-color:var(--purple)}
   #doc{position:absolute;left:0;top:0;width:100%;border:none;box-shadow:none;padding:0}
   @page{margin:14mm}
 }
+
+.btn-group{display:inline-flex;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;width:max-content}
+.btn-tab{border:none;background:#fff;padding:.4rem .9rem;font-weight:700;cursor:pointer;font-size:.8rem;color:var(--muted)}
+.btn-tab.active{background:var(--purple);color:#fff}

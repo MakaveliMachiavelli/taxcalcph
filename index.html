@@ -52,8 +52,15 @@
             <option value="mixed">Employed + freelance (mixed income)</option>
           </select>
         </label>
-        <label>Expected GROSS receipts per year (₱) — freelance/business
+        <div class="btn-group">
+          <button type="button" id="periodAnnual" class="btn-tab active">Annual</button>
+          <button type="button" id="periodMonthly" class="btn-tab">Monthly</button>
+        </div>
+        <label>Gross receipts (<span id="periodLabel">Annual</span> ₱) — freelance/business
           <input id="gross" type="number" min="0" step="any" value="600000">
+        </label>
+        <label>Form 2307 credits — tax withheld by clients (₱, optional)
+          <input id="cwtCredits" type="number" min="0" step="any" value="0" placeholder="e.g. 12000">
         </label>
         <label id="compWrap" class="hidden">Annual compensation income (₱) — employed
           <input id="comp" type="number" min="0" step="any" value="420000">
@@ -113,7 +120,10 @@
             <tr><td>Less: ₱250k exemption</td><td class="r" id="d_250A">—</td><td class="r">—</td></tr>
             <tr><td>Less: 40% OSD</td><td class="r">n/a</td><td class="r" id="d_osd">—</td></tr>
             <tr><td><strong>Taxable income</strong></td><td class="r" id="d_taxableA">—</td><td class="r" id="d_taxableB">—</td></tr>
+            <tr><td>3% percentage tax (non-VAT ≤₱3M)</td><td class="r">replaced by 8%</td><td class="r" id="d_pt">—</td></tr>
             <tr class="totrow"><td><strong>Annual income tax</strong></td><td class="r" id="d_taxA">—</td><td class="r" id="d_taxB">—</td></tr>
+            <tr id="cwtRow" style="display:none"><td>Less: 2307 credits withheld</td><td class="r" id="d_cwtA">—</td><td class="r" id="d_cwtB">—</td></tr>
+            <tr id="payRow" style="display:none" class="totrow"><td><strong>PAYABLE after credits</strong></td><td class="r" id="d_payA">—</td><td class="r" id="d_payB">—</td></tr>
             <tr class="comp-rows hidden"><td>Compensation income (salary)</td><td class="r" id="d_comp">—</td><td class="r" id="d_comp2">—</td></tr>
             <tr class="comp-rows hidden"><td>Less: ₱90k exemption + contributions</td><td class="r" id="d_compded">—</td><td class="r" id="d_compded2">—</td></tr>
             <tr class="comp-rows hidden"><td>Compensation income tax</td><td class="r" id="d_compTax">—</td><td class="r" id="d_compTax2">—</td></tr>

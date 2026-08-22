@@ -43,24 +43,30 @@ function bracketOf(taxable) {
 }
 
 function calc() {
-  const gross = Number($('gross').value) || 0;
+  const rawGross = Number($('gross').value) || 0;
+  const monthly = $('periodMonthly') && $('periodMonthly').classList.contains('active');
+  const gross = monthly ? rawGross * 12 : rawGross;
   const mixed = $('mixMode').value === 'mixed';
-  // Option A: 8% on gross over 250k
-  const aBase = Math.max(0, gross - EXEMPT);
+  // Option A: 8% on gross over 250k (mixed earners: exemption sits on the salary side)
+  const aBase = Math.max(0, gross - (mixed ? 0 : EXEMPT));
   const aTax = aBase * 0.08;
-  // Option B: graduated on (gross − 40% OSD)
+  // Option B: graduated on (gross − 40% OSD) + 3% percentage tax (non-VAT, ≤₱3M — 8% replaces it)
   const osdAmt = gross * OSD;
   const bTaxable = Math.max(0, gross - osdAmt);
-  const bTax = gradTax(bTaxable);
+  const bIncomeTax = gradTax(bTaxable);
+  const bPt = gross > 0 && gross <= VAT_THRESHOLD ? gross * 0.03 : 0;
+  const bTax = bIncomeTax + bPt;
   // Mixed: compensation taxed graduated after ₱90k 13th-month/benefits cap + mandatory contributions
   const comp = mixed ? (Number($('comp').value) || 0) : 0;
   const contribs = mixed ? (Number($('contribs').value) || 0) : 0;
   const compExempt = Math.min(90000, Math.max(0, comp));
   const compTaxable = Math.max(0, comp - compExempt - contribs);
   const compTax = gradTax(compTaxable);
+  const cwt = Number(($('cwtCredits') ? $('cwtCredits').value : 0)) || 0;
   return {
-    gross, mixed, aBase, aTax, osdAmt, bTaxable, bTax,
-    comp, contribs, compExempt, compTaxable, compTax,
+    gross, rawGross, monthly, mixed, aBase, aTax, osdAmt, bTaxable, bIncomeTax, bPt, bTax,
+    comp, contribs, compExempt, compTaxable, compTax, cwt,
+    aPayable: Math.max(0, aTax - cwt), bPayable: Math.max(0, bTax - cwt),
     aTotal: aTax + compTax, bTotal: bTax + compTax
   };
 }
@@ -72,8 +78,8 @@ function quarterly(c, method) {
   for (let q = 1; q <= 4; q++) {
     const cumGross = c.gross * shares.slice(0, q).reduce((s, v) => s + v, 0);
     let cumTax;
-    if (method === 'A') cumTax = Math.max(0, cumGross - EXEMPT) * 0.08;
-    else cumTax = gradTax(Math.max(0, cumGross - cumGross * OSD));
+    if (method === 'A') cumTax = Math.max(0, cumGross - (c.mixed ? 0 : EXEMPT)) * 0.08;
+    else cumTax = gradTax(Math.max(0, cumGross - cumGross * OSD)) + (cumGross > 0 && cumGross <= VAT_THRESHOLD ? cumGross * 0.03 : 0);
     rows.push({ q, cumGross, cumTax, pay: Math.max(0, cumTax - prevPay) });
     prevPay = cumTax;
   }
@@ -93,7 +99,9 @@ function exportCsv(qrows, method, c) {
 
 function render() {
   const c = calc();
-  $('monthlyEcho').textContent = peso(c.gross / 12);
+  $('monthlyEcho').textContent = c.monthly
+    ? '₱' + Math.round(c.rawGross).toLocaleString() + '/mo → ' + peso(c.gross) + '/yr'
+    : peso(c.gross / 12);
   $('compWrap').classList.toggle('hidden', !c.mixed);
   $('contribWrap').classList.toggle('hidden', !c.mixed);
 
@@ -122,7 +130,8 @@ function render() {
   if (c.mixed) warns.push('Mixed income: your employer withholds the salary part monthly (substituted filing for compensation). The 8%-vs-graduated choice applies to your freelance income — you still file 1701/1701Q for it.');
   if (c.gross > EIGHT_PCT_CAP) warns.push('Freelance gross exceeds ₱3M — you are NOT eligible for the 8% option; graduated applies.');
   if (c.gross > VAT_THRESHOLD) warns.push('Above ₱3M you are generally required to register for VAT (12%) — separate from income tax.');
-  if (c.gross > 0 && c.gross < 250000) warns.push('Below ₱250k freelance gross you owe ₱0 on the freelance side under both options.');
+  if (c.gross > 0 && c.gross < 250000) warns.push('Below ₱250k freelance gross you owe ₱0 income tax on the freelance side — but graduated still owes 3% percentage tax on gross (8% replaces it).');
+  if (c.bPt > 0) warns.push('Option B includes 3% percentage tax (BIR 2551Q) for non-VAT taxpayers on graduated rates; electing 8% replaces it.');
   $('warn').innerHTML = warns.map(w => `<div>${w}</div>`).join('');
 
   // comparison doc
@@ -133,6 +142,13 @@ function render() {
   p('d_osd', '−' + peso(c.osdAmt));
   p('d_taxableA', peso(c.aBase)); p('d_taxableB', peso(c.bTaxable));
   p('d_taxA', peso(c.aTax)); p('d_taxB', peso(c.bTax));
+  p('d_pt', c.bPt > 0 ? peso(c.bPt) : 'n/a');
+  const showPay = c.cwt > 0;
+  ['cwtRow','payRow'].forEach(id => { const el = $(id); if (el) el.style.display = showPay ? '' : 'none'; });
+  if (showPay) {
+    p('d_cwtA', '−' + peso(Math.min(c.cwt, c.aTax))); p('d_cwtB', '−' + peso(Math.min(c.cwt, c.bTax)));
+    p('d_payA', peso(c.aPayable)); p('d_payB', peso(c.bPayable));
+  }
   p('d_erA', pct(c.gross > 0 ? c.aTax / c.gross : 0)); p('d_erB', pct(c.gross > 0 ? c.bTax / c.gross : 0));
   document.querySelectorAll('.comp-rows').forEach(el => el.classList.toggle('hidden', !c.mixed));
   if (c.mixed) {
@@ -164,7 +180,8 @@ function saveDraft() {
   try {
     localStorage.setItem(LS.draft, JSON.stringify({
       gross: $('gross').value, season: $('season').value,
-      mixMode: $('mixMode').value, comp: $('comp').value, contribs: $('contribs').value
+      mixMode: $('mixMode').value, comp: $('comp').value, contribs: $('contribs').value,
+      monthly: $('periodMonthly').classList.contains('active'), cwt: $('cwtCredits').value
     }));
   } catch (e) {}
 }
@@ -177,6 +194,8 @@ function loadDraft() {
     $('mixMode').value = d.mixMode ?? 'pure';
     $('comp').value = d.comp ?? 420000;
     $('contribs').value = d.contribs ?? 0;
+    $('cwtCredits').value = d.cwt ?? 0;
+    if (d.monthly) { $('periodMonthly').classList.add('active'); $('periodAnnual').classList.remove('active'); $('periodLabel').textContent = 'Monthly'; }
   } catch (e) {}
 }
 
@@ -189,7 +208,20 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDraft();
   applyPro();
 
-  ['gross', 'season', 'mixMode', 'comp', 'contribs'].forEach(id => $(id).addEventListener('input', render));
+  ['gross', 'season', 'mixMode', 'comp', 'contribs', 'cwtCredits'].forEach(id => $(id).addEventListener('input', render));
+  const setPeriod = (mode) => {
+    const isM = mode === 'monthly';
+    if ($('periodMonthly').classList.contains('active') !== isM) {
+      const v = Number($('gross').value) || 0;
+      $('gross').value = v ? String(Math.round(isM ? v / 12 : v * 12)) : v;
+    }
+    $('periodMonthly').classList.toggle('active', isM);
+    $('periodAnnual').classList.toggle('active', !isM);
+    $('periodLabel').textContent = isM ? 'Monthly' : 'Annual';
+    render();
+  };
+  $('periodMonthly').addEventListener('click', () => setPeriod('monthly'));
+  $('periodAnnual').addEventListener('click', () => setPeriod('annual'));
   $('printBtn').addEventListener('click', () => window.print());
 
   const openPay = () => { $('payModal').classList.remove('hidden'); $('codeMsg').textContent = ''; };

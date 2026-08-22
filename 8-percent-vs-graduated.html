@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8% vs Graduated Tax: The 2026 Decision Guide (With Exact Crossover) — TaxCalcPH</title>
+<meta name="description" content="Exact crossover: below ₱937,500 gross receipts, graduated+OSD computes less tax; above it, 8% wins. Full comparison table, TRAIN brackets, common mistakes — and a free calculator.">
+<link rel="canonical" href="https://makavelimachiavelli.github.io/taxcalcph/8-percent-vs-graduated.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%237c3aed'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3E8%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<style>
+.article{max-width:780px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:2rem}
+.article h1{font-size:1.7rem;letter-spacing:-.02em;margin:.2rem 0 .6rem}
+.article h2{font-size:1.15rem;margin:1.6rem 0 .5rem}
+.article p,.article li{color:#344054;font-size:.95rem;line-height:1.65}
+.article table{width:100%;border-collapse:collapse;font-size:.85rem;margin:.8rem 0}
+.article th{background:#ede9fe;color:#4c1d95;text-align:left;padding:.45rem}
+.article td{border-bottom:1px solid var(--line);padding:.45rem}
+.article .num{text-align:right;font-variant-numeric:tabular-nums}
+.callout{background:#f4f0ff;border-radius:10px;padding:.9rem 1.1rem;margin:1rem 0;font-size:.92rem}
+.article a{color:var(--purple)}
+.crumb{max-width:780px;margin:1rem auto 0;font-size:.8rem;color:var(--muted)}
+.crumb a{color:var(--purple);text-decoration:none}
+@media(max-width:700px){.article{padding:1.2rem}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="brand">Tax<span>Calc</span>PH</div>
+  <nav><a href="./index.html">← Calculator</a></nav>
+</header>
+<div class="crumb"><a href="./index.html">TaxCalcPH</a> › 8% vs graduated guide</div>
+<main class="article wrap" style="padding:1.2rem">
+<h1>8% vs Graduated: the exact numbers for 2026</h1>
+<p><strong>Short answer: the crossover is ₱937,500 of gross receipts.</strong> Below it, graduated rates with the 40% Optional Standard Deduction compute less tax. Above it, the 8% flat option wins. Here's the full math, the mistakes people make, and when the rule of thumb breaks.</p>
+
+<h2>The two options, precisely</h2>
+<p><strong>Option A — 8% flat:</strong> you pay 8% on gross receipts <em>over</em> ₱250,000 (the first ₱250k stays exempt). No deductions, simpler compliance, but requires gross ≤ ₱3M and you keep paying percentage tax obligations replaced by the 8% election.</p>
+<p><strong>Option B — graduated + OSD:</strong> deduct 40% of gross as the Optional Standard Deduction, then apply the TRAIN rates (0% to 35%) to the remaining 60%.</p>
+<div class="callout">🎯 <strong>Run your exact number:</strong> <a href="./index.html">the free calculator</a> does both sides, handles mixed employed+freelance income, and gives quarterly 1701Q amounts.</div>
+
+<h2>Why the crossover sits at ₱937,500</h2>
+<p>Below ₱1M of taxable income the graduated rate is 20% — but that 20% only hits 60% of your gross (after OSD), which is effectively 12% of gross, minus the cushion of the ₱250k exemption and bracket base. The algebra: 8%×(g−250,000) = 22,500 + 20%×(0.6g − 400,000) solves to <strong>g = ₱937,500</strong>. Both options compute ₱55,000 exactly there.</p>
+
+<table>
+<tr><th>Gross receipts</th><th class="num">8% option</th><th class="num">Graduated + OSD</th><th>Winner</th></tr>
+<tr><td>₱250,000</td><td class="num">₱0</td><td class="num">₱0</td><td>tie (both exempt)</td></tr>
+<tr><td>₱400,000</td><td class="num">₱12,000</td><td class="num">₱0</td><td>Graduated</td></tr>
+<tr><td>₱600,000</td><td class="num">₱28,000</td><td class="num">₱16,500</td><td>Graduated</td></tr>
+<tr><td>₱800,000</td><td class="num">₱44,000</td><td class="num">₱38,500</td><td>Graduated</td></tr>
+<tr><td><strong>₱937,500</strong></td><td class="num">₱55,000</td><td class="num">₱55,000</td><td><strong>exact crossover</strong></td></tr>
+<tr><td>₱1,000,000</td><td class="num">₱60,000</td><td class="num">₱62,500</td><td>8%</td></tr>
+<tr><td>₱1,500,000</td><td class="num">₱100,000</td><td class="num">₱127,500</td><td>8%</td></tr>
+<tr><td>₱2,500,000</td><td class="num">₱180,000</td><td class="num">₱277,500</td><td>8%</td></tr>
+</table>
+<p class="article" style="font-size:.8rem;color:#667085">Per R.A. 10963 (TRAIN) individual rate tables; assumes OSD, no itemized deductions.</p>
+
+<h2>When the rule of thumb breaks</h2>
+<ul>
+<li><strong>Your actual expenses exceed 40% of gross</strong> → itemized deductions beat OSD, pushing graduated further down. 8% wins less often.</li>
+<li><strong>You're VAT-registered</strong> → VAT is a separate 12% on top; the income-tax comparison stands but cash flow changes.</li>
+<li><strong>Gross over ₱3M</strong> → 8% is off the table entirely; you're graduated (and generally VAT-registered).</li>
+<li><strong>Employed + freelance</strong> → your salary is taxed (and withheld) separately; the 8%-vs-graduated election applies to the freelance side. <a href="./index.html">The calculator's mixed mode</a> handles this.</li>
+</ul>
+
+<h2>The mistakes that cost money</h2>
+<ul>
+<li><strong>Picking 8% "for simplicity" at ₱500k gross</strong> — that's ₱16,500/year donated to the BIR vs graduated+OSD.</li>
+<li><strong>Forgetting the ₱250k exemption applies to 8% too</strong> — some calculators charge 8% on the whole gross; correct is 8% on the excess.</li>
+<li><strong>Not re-deciding annually</strong> — your income crosses the ₱937.5k line and nobody tells you. Recompute each January.</li>
+<li><strong>Confusing percentage tax with income tax</strong> — the 8% election replaces the 3% percentage tax for non-VAT taxpayers; graduated does not.</li>
+</ul>
+
+<h2>Decision, in one paragraph</h2>
+<p>Under ~₱930k gross and expenses under 40% of revenue? Graduated + OSD. Over ~₱940k, or you value not maintaining books of accounts at 8%'s slightly higher tax? Take 8%. Between ₱900k and ₱1M, the difference is under ₱3,000 — decide on compliance preferences. Then verify with your RDO before filing; this is a calculator and a guide, not legal advice.</p>
+
+<p style="margin-top:1.5rem">🔗 <a href="./index.html">Run your number in the free calculator →</a> · Also see <a href="https://makavelimachiavelli.github.io/invoiceph/">InvoicePH — free BIR/EOPT-compliant invoice generator</a></p>
+</main>
+<footer class="site-footer"><p>TaxCalcPH guide · per R.A. 10963 tables · verify with your accountant/RDO</p></footer>
+</body>
+</html>

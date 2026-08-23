@@ -1,7 +1,7 @@
 /* TaxCalcPH — styles */
 :root{
-  --purple:#7c3aed; --ink:#101828; --muted:#667085; --line:#e4e7ec;
-  --bg:#f8f6fd; --card:#fff; --green:#0e9f6e; --red:#dc2626; --amber:#b45309;
+  --purple:#7c3aed; --ink:#1a1410; --muted:#7c6f5f; --line:#e7ddcd;
+  --bg:#f8f6fd; --card:#fff; --green:#067a53; --red:#dc2626; --amber:#b45309;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
@@ -60,7 +60,7 @@ input:focus,select:focus{outline:2px solid #ddd3ff;border-color:var(--purple)}
 .bracket-table tr.hit td{background:#f1ebfd;font-weight:700}
 
 /* comparison doc */
-.comp-doc{background:#fff;border:1px solid #cbd5e1;border-radius:6px;padding:1.2rem;font-size:.85rem;box-shadow:0 1px 4px rgba(16,24,40,.06)}
+.comp-doc{background:#fff;border:1px solid #d4c9b8;border-radius:6px;padding:1.2rem;font-size:.85rem;box-shadow:0 1px 4px rgba(16,24,40,.06)}
 .cd-head{font-weight:900;letter-spacing:.14em;text-align:center;border-bottom:2px solid var(--ink);padding-bottom:.4rem;margin-bottom:.3rem}
 .cd-sub{font-size:.78rem;color:var(--muted);margin-bottom:.7rem}
 .cd-table{width:100%;border-collapse:collapse;font-size:.82rem}

@@ -3,7 +3,7 @@
 'use strict';
 
 /* PRO unlock codes. OWNER: change before promoting (see PAYMENTS.md). */
-const PRO_CODES = ['TAXCALC-PH-99', 'TCP-DEMO'];
+const PRO_CODES = ['TAX-PRO-C8ED05E01B02', 'DEMO'];
 const LS = { draft: 'tcp_draft', pro: 'tcp_pro' };
 
 /* TRAIN graduated brackets (taxable income): [cap, base tax, rate over lower bound] */

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>8% vs Graduated Tax Calculator Philippines 2026 — TaxCalcPH</title>
+<link rel="manifest" href="manifest.json">
 <meta name="description" content="Should you pick 8% or graduated tax? Free calculator for Philippine freelancers & self-employed. Compares 8% flat vs graduated (with 40% OSD), quarterly 1701Q amounts, printable computation. TRAIN/R.A. 10963 tables.">
 <meta property="og:title" content="TaxCalcPH — 8% vs Graduated Tax Calculator">
 <meta property="og:description" content="Free PH freelancer tax calculator: 8% flat vs graduated + OSD comparison, quarterly 1701Q, mixed income mode. PRO ₱99 for CSV + computation sheet.">
@@ -245,5 +246,11 @@
 </div>
 
 <script src="app.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+</script>
 </body>
 </html>

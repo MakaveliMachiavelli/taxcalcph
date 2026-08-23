@@ -1,0 +1,16 @@
+{
+  "name": "TaxCalcPH",
+  "short_name": "taxcalcph",
+  "description": "8% vs graduated tax comparison for PH freelancers.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#faf6ef",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='#7c3aed'/><text x='32' y='44' font-size='34' text-anchor='middle' fill='%23fff' font-family='Arial' font-weight='bold'>T</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

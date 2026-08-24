@@ -1,6 +1,6 @@
 /* TaxCalcPH — styles */
 :root{
-  --purple:#7c3aed; --ink:#101828; --muted:#667085; --line:#e4e7ec;
+  --purple:#7c3aed; --ink:#101828; --muted:#3d4a5c; --line:#e4e7ec;
   --bg:#f8f6fd; --card:#fff; --green:#0e9f6e; --red:#dc2626; --amber:#b45309;
 }
 *{box-sizing:border-box}
